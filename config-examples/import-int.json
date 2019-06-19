@@ -1,0 +1,17 @@
+{
+  "host": "https://my-dev-kibana-service.example.com",
+  "oldIndex": "my-application-dev*",
+  "newIndex": "my-application-int*",
+  "findInName": "-dev-",
+  "replaceInName": "-int-",
+  "dashboards": [
+    {
+      "name": "My Application Alerts (int)",
+      "template": "templates/alerts-template.json"
+    },
+    {
+      "name": "My Application Workflow (int) - Form Trace",
+      "template": "templates/workflow-template.json"
+    }
+  ]
+}

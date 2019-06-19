@@ -1,0 +1,13 @@
+{
+  "host": "https://my-dev-kibana-service.example.com",
+  "dashboards": [
+    {
+      "name": "My Application Alerts (dev)",
+      "template": "templates/alerts-template.json"
+    },
+    {
+      "name": "My Application Workflow (dev) - Form Trace",
+      "template": "templates/workflow-template.json"
+    }
+  ]
+}

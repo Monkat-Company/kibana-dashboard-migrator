@@ -1,0 +1,17 @@
+{
+  "host": "https://my-prod-kibana-service.example.com",
+  "oldIndex": "my-application-dev*",
+  "newIndex": "my-application-prod*",
+  "findInName": "-dev-",
+  "replaceInName": "-prod-",
+  "dashboards": [
+    {
+      "name": "My Application Alerts",
+      "template": "templates/alerts-template.json"
+    },
+    {
+      "name": "My Application Workflow - Form Trace",
+      "template": "templates/workflow-template.json"
+    }
+  ]
+}
