@@ -131,5 +131,5 @@ Install  [nexe](https://github.com/nexe/nexe)
 
 Build executable
 
-```cat index.js | nexe -o dist/kibanaDashboard -t 8.10.0```
+```nexe index.js -o dist/kibanaDashboard -t 8.10.0```
 
