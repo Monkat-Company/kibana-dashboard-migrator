@@ -47,6 +47,7 @@ Example:
 
 ```json
 {
+  "type": "export",
   "host": "https://my-dev-kibana-service.example.com",
   "dashboards": [
     {
@@ -62,6 +63,7 @@ Example:
 ```
 |variable|Description|
 |---|----|
+|type| The type of configuration file - either import or export|
 |host|The hostname of the kibana instance|
 |dashboards/name| The name of the dashboard to export - must be exact match!|
 |dashboards/template| The template file to generate|
@@ -78,6 +80,7 @@ node export.js -c <config file>
 
 ```json
 {
+  "type": "import",
   "host": "https://my-dev-kibana-service.example.com",
   "oldIndex": "my-application-dev*",
   "newIndex": "my-application-int*",
@@ -98,6 +101,7 @@ node export.js -c <config file>
 
 |variable|Description|
 |---|----|
+|type| The type of configuration file - either import or export|
 |host|The hostname of the kibana instance|
 |oldIndex| The index name in the template to replace|
 |newIndex| The index name for the new dashboard to use - must already exist!|
@@ -110,7 +114,7 @@ node export.js -c <config file>
 #### Run
 
 ```bash
-node import.js -c <config file>
+kibanaDashboard -c <config file>
 ```
 
 ## Kibana Version
@@ -125,14 +129,7 @@ Install  [nexe](https://github.com/nexe/nexe)
 
 ```npm install -g nexe```
 
-Build export executable
+Build executable
 
-```cat export.js | nexe -o dist/exportKibana -t 8.10.0```
+```cat index.js | nexe -o dist/kibanaDashboard -t 8.10.0```
 
-*note: --build parameter is only required on first run*
-
-Build import executable
-
-```cat import.js | nexe -o dist/importKibana -t 8.10.0```
-
-*note: --build parameter is only required on first run*

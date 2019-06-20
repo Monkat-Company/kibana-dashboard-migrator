@@ -1,4 +1,5 @@
 {
+  "type": "import",
   "host": "https://my-prod-kibana-service.example.com",
   "oldIndex": "my-application-dev*",
   "newIndex": "my-application-prod*",

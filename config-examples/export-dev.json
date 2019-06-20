@@ -1,4 +1,5 @@
 {
+  "type": "export",
   "host": "https://my-dev-kibana-service.example.com",
   "dashboards": [
     {
