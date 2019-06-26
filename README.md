@@ -68,12 +68,6 @@ Example:
 |dashboards/name| The name of the dashboard to export - must be exact match!|
 |dashboards/template| The template file to generate|
 
-#### Run
-
-```bash
-node export.js -c <config file>
-```
-
 ### Importing
 
 #### Configuration
@@ -111,12 +105,6 @@ node export.js -c <config file>
 |dashboards/template| The template file to use|
 
 
-#### Run
-
-```bash
-kibanaDashboard -c <config file>
-```
-
 ## Kibana Version
 
 Kibana goes through quite big changes especially around the visualisations and dashboards.
@@ -133,3 +121,10 @@ Build executable
 
 ```nexe index.js -o dist/kibanaDashboard -t 8.10.0```
 
+## Usage
+
+Using the binary from the dist folder.
+
+```
+grafanaDashboard -c <config file>
+```

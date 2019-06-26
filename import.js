@@ -204,8 +204,8 @@ function handleSearch(obj, jsonData, panel) {
 async function runit(host, auth, title, oldIndex, newIndex, filename, pre, post) {
 
     options.host = host;
-    options.auth = auth
-;    options.title = title;
+    options.auth = auth;
+    options.title = title;
     options.oldIndex = oldIndex;
     options.newIndex = newIndex;
     options.filename = filename;
