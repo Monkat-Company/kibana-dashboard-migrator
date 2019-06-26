@@ -5,9 +5,10 @@ const program = require('commander');
 const async = require('async');
 const fs = require('fs');
 const optimist = require('optimist');
+const pjson = require('./package.json');
 
 program
-    .version('1.3.0')
+    .version(pjson.version)
     .description('Import an export dashboard templates with Kibana. See https://github.com/Monkat-Company/kibana-dashboard-migrator for more details.')
     .option('-c, --config <config filename>', 'The configuration filename')
     .option('--username <username>', 'Kibana username')
