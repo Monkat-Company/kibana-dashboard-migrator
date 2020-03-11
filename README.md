@@ -109,7 +109,7 @@ Example:
 
 Kibana goes through quite big changes especially around the visualisations and dashboards.
 
-This code was tested against ```Version: 6.3.1```
+This code was tested against ```Version: 7.1.1```
 
 ## Building the executable
 
@@ -127,8 +127,12 @@ Note: See [nexe](https://github.com/nexe/nexe) for available targets.
 
 ## Usage
 
-Pick the correct binary from the dist folder and rename to grafanaDashboard.  Then run:
+Pick the correct binary from the dist folder and rename to kibanaDashboard.  Then run:
 
 ```
-grafanaDashboard -c <config file>
+kibanaDashboard -c <config file>
 ```
+
+## Legacy Binary
+
+The dist folder contains the legacy Kibana 6.x binaries - code can be found on the branch named ```version6```

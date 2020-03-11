@@ -33,12 +33,15 @@ let deleteExistingDashboard = (dashboardJson) => new Promise((resolve, reject) =
 let deleteObject = (id, type) => new Promise((resolve, reject) => {
     let deleteOptions = {
         headers: {
-            'Authorization': 'Basic ' + options.auth,
             'kbn-xsrf': 'reporting'
         },
         uri: options.host + '/_plugin/kibana/api/saved_objects/' + type + '/' + id,
         method: 'DELETE'
     };
+
+    if (options.auth) {
+        deleteOptions.headers['Authorization'] = 'Basic ' + options.auth;
+    }
 
     console.log("deleting type: ", type, " ID:", id);
 
@@ -58,12 +61,15 @@ let findIndex = () => {
     return new Promise((resolve, reject) => {
         let getOptions = {
             headers: {
-                'Authorization': 'Basic ' + options.auth,
                 'kbn-xsrf': 'reporting'
             },
             uri: options.host + '/_plugin/kibana/api/saved_objects/_find?type=index-pattern&search_fields=title&search="' + options.newIndex + '"',
             method: 'GET'
         };
+
+        if (options.auth) {
+            getOptions.headers['Authorization'] = 'Basic ' + options.auth;
+        }
 
         console.log("Getting index: ID:", options.newIndex);
 
@@ -96,35 +102,25 @@ let readFile = () => new Promise((resolve, reject) => {
 
 let modifyTemplate = (template) => new Promise((resolve) => {
 
-    let dashboard = find(template['objects'], {'type': 'dashboard'});
-
-    dashboard['id'] = uuid();
-    dashboard['attributes']['title'] = options.title;
-
-    let panel = JSON.parse(dashboard['attributes']['panelsJSON']);
-
+    let currentDashboard;
     forEach(template['objects'], (obj) => {
-        console.log("Handling ", obj);
-
         let type = obj['type'];
-        if (type === 'visualization') {
-            handleVisualization(obj, panel);
-        }
-
-        if (type === 'search') {
-            handleSearch(obj, template, panel);
-        }
-
-        if (type === 'index-pattern') {
+        if (type === 'dashboard') {
+            obj['id'] = uuid();
+            obj['attributes']['title'] = options.title;
+            currentDashboard = obj;
+        } else if (type === 'visualization') {
+             handleReference(obj, currentDashboard);
+        } else if (type === 'search') {
+            handleReference(obj, currentDashboard);
+        } else if (type === 'index-pattern') {
             console.log('Updated index-pattern to', options.newIndex);
             options.oldIndex = obj['id'];
             obj['id'] = options.newIndex;
             obj['attributes']['title'] = obj['attributes']['title'].replace(options.pre, options.post)
-
         }
     });
 
-    dashboard['attributes']['panelsJSON'] = JSON.stringify(panel);
     resolve(template)
 });
 
@@ -147,13 +143,16 @@ let createDashboard = (template) => new Promise((resolve, reject) => {
 
     let requestOptions = {
         headers: {
-            'Authorization': 'Basic ' + options.auth,
             'kbn-xsrf': 'reporting'
         },
         uri: options.host + '/_plugin/kibana/api/kibana/dashboards/import?exclude=index-pattern',
         body: templateStr,
         method: 'POST'
     };
+
+    if (options.auth) {
+        requestOptions.headers['Authorization'] = 'Basic ' + options.auth;
+    }
 
     request(requestOptions, (error, response, body) => {
         if (error || response.statusCode !== 200) {
@@ -170,35 +169,24 @@ let createDashboard = (template) => new Promise((resolve, reject) => {
     });
 });
 
-
-function handleVisualization(obj, panel) {
-    let oldId = obj['id'];
-    let newId = uuid();
-    let ref = find(panel, {'id': oldId});
-    ref['id'] = newId;
-    obj['id'] = newId;
-    obj['attributes']['title'] = obj['attributes']['title'].replace(options.pre, options.post);
-    obj['attributes']['visState'] = obj['attributes']['visState'].replace(options.pre, options.post);
-    console.log('Updated visualization to', newId)
-}
-
-function handleSearch(obj, jsonData, panel) {
-    let oldId = obj['id'];
-    let newId = uuid();
-    let ref = find(jsonData['objects'], {'attributes': {'savedSearchId': oldId}});
-    // console.log(ref)
-    if (ref) {
-        ref['attributes']['savedSearchId'] = newId
-    } else {
-        let panelElement = find(panel, {'id': oldId});
-        panelElement['id'] = newId
+function handleReference(obj, currentDashboard) {
+    let dashRef = find(currentDashboard['references'], {'id': obj.id});
+    obj['id'] = uuid();
+    dashRef['id'] = obj['id'];
+    if(obj['attributes'] && obj['attributes']['title'] ) {
+        obj['attributes']['title'] = obj['attributes']['title'].replace(options.pre, options.post);
     }
-    obj['id'] = newId;
-    obj['attributes']['title'] = obj['attributes']['title'].replace(options.pre, options.post);
-    let searchSource = JSON.parse(obj['attributes']['kibanaSavedObjectMeta']['searchSourceJSON']);
-    searchSource['index'] = options.newIndex;
-    obj['attributes']['kibanaSavedObjectMeta']['searchSourceJSON'] = JSON.stringify(searchSource);
-    console.log('Updated search to', newId)
+    if(obj['attributes'] && obj['attributes']['visState'] ) {
+        obj['attributes']['visState'] = obj['attributes']['visState'].replace(options.pre, options.post);
+    }
+    obj['references'].forEach(ref => {
+        if(ref.type==='index-pattern'){
+            ref['id'] = options.newIndex;
+        }
+    });
+
+    console.log('Updated visualization to',  obj['id']);
+    return obj['id'];
 }
 
 async function runit(host, auth, title, oldIndex, newIndex, filename, pre, post) {

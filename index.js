@@ -34,11 +34,11 @@ if (!program.config) {
 let schema = {
     properties: {
         username: {
-            required: true
+            required: false
         },
         password: {
             hidden: true,
-            required: true
+            required: false
         }
     }
 };
@@ -49,6 +49,9 @@ prompt.start();
 
 prompt.get(schema, function (err, result) {
     let auth = Buffer.from(result.username + ":" + result.password).toString('base64');
+    if(auth === 'Og=='){
+        auth = undefined;
+    }
     let importJson = JSON.parse(fs.readFileSync(program.config));
 
     async.eachSeries(importJson['dashboards'], async function (eachItem, next) {
