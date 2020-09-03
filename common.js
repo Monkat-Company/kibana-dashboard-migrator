@@ -1,6 +1,6 @@
 const request = require('request');
 const fs = require('fs');
-
+const {forEach} = require('lodash');
 module.exports = {
     findExistingDashboard(options) {
         return new Promise((resolve, reject) => {
@@ -93,17 +93,25 @@ module.exports = {
                 requestOptions.headers['Authorization'] = 'Basic ' + options.auth;
             }
 
-            request(requestOptions, (error, response, body) => {
+            return request(requestOptions, (error, response, body) => {
 
-                if (error || response.statusCode !== 200) {
+                if (error) {
                     console.log("Error cannot get alert: ", body);
                     reject(error)
                 } else {
                     let response = JSON.parse(body);
+                    let isFound = false;
                     if (response['hits']['hits'].length > 0) {
-                        console.log("Obtained existing alert.");
-                        resolve(response['hits']['hits'][0]['_id'])
-                    } else {
+                        response['hits']['hits'].forEach(function(obj){
+                            if (obj['_source']['name'] === options.title) {
+                                console.log("Found existing alert.");
+                                resolve(obj['_id']);
+                                isFound = true;
+                            }
+                        });
+                    }
+                    if(!isFound) {
+                        console.log('Unable to find existing alert');
                         resolve();
                     }
                 }

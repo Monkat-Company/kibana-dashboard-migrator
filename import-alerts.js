@@ -3,31 +3,9 @@
 const request = require('request');
 const common = require('./common.js');
 const {forEach} = require('lodash');
-const uuid = require('uuid/v4');
 const fs = require('fs');
 let options = {};
 
-async function alert(host, auth, title, oldIndex, newIndex, filename, pre, post, destinationId) {
-
-    options.host = host;
-    options.auth = auth;
-    options.title = title;
-    options.oldIndex = oldIndex;
-    options.alertDestinationId = destinationId;
-    options.newIndex = newIndex;
-    options.filename = filename;
-    options.pre = pre;
-    options.post = post;
-
-
-    await common.findExistingAlert(options)
-        .then((id) => common.findExistingAlert(options, id))
-        .then(deleteAlert)
-        .then(readFile)
-        .then((template) => modifyTemplate(template))
-        .then(createAlert)
-        .catch((error) => console.log(error))
-}
 
 let deleteAlert = (id) => new Promise((resolve, reject) => {
     if (id === undefined) {
@@ -140,5 +118,27 @@ let modifyTemplate = (template) => new Promise((resolve) => {
     resolve(template['monitor'])
 });
 
+
+async function alert(host, auth, title, oldIndex, newIndex, filename, pre, post, destinationId) {
+
+    options.host = host;
+    options.auth = auth;
+    options.title = title;
+    options.oldIndex = oldIndex;
+    options.alertDestinationId = destinationId;
+    options.newIndex = newIndex;
+    options.filename = filename;
+    options.pre = pre;
+    options.post = post;
+
+    console.log(`Looking for ${options.title}`);
+
+    await common.findExistingAlert(options)
+        .then(deleteAlert)
+        .then(readFile)
+        .then((template) => modifyTemplate(template))
+        .then(createAlert)
+        .catch((error) => console.log(error))
+}
 
 module.exports.alert = alert;

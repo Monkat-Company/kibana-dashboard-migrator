@@ -6,16 +6,14 @@
   "findInName": "-ci-",
   "replaceInName": "-int-",
   "alertDestinationId": "A5Yf8XIB6hkUUzf6gcwn",
-  "dashboards": [
-    {
-      "name": "My Application Workflow (int) - Form Trace",
-      "template": "templates/workflow-template.json"
-    }
-  ],
   "alerts": [
     {
       "name": "My Alert",
-      "template": "templates/alerts-template.json"
+      "template": "templates/ah-hub-service-cre-alert.json"
+    },
+    {
+      "name": "My Alert1",
+      "template": "templates/ah-hub-service-dre-alert.json"
     }
   ]
 }
