@@ -1,14 +1,10 @@
 {
   "type": "export",
-  "host": "https://my-dev-kibana-service.example.com",
-  "dashboards": [
+  "host": "https://kibana.ci.allianzuk.cloud",
+  "alerts": [
     {
-      "name": "My Application Alerts (dev)",
+      "name": "ah-ppch-hub-service-ci-healthcheck-trigger",
       "template": "templates/alerts-template.json"
-    },
-    {
-      "name": "My Application Workflow (dev) - Form Trace",
-      "template": "templates/workflow-template.json"
     }
   ]
 }

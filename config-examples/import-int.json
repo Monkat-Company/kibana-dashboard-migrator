@@ -1,18 +1,21 @@
 {
   "type": "import",
   "host": "https://my-dev-kibana-service.example.com",
-  "oldIndex": "my-application-dev*",
-  "newIndex": "my-application-int*",
-  "findInName": "-dev-",
+  "oldIndex": "fluentd-ci-*",
+  "newIndex": "fluentd-int-*",
+  "findInName": "-ci-",
   "replaceInName": "-int-",
+  "alertDestinationId": "A5Yf8XIB6hkUUzf6gcwn",
   "dashboards": [
-    {
-      "name": "My Application Alerts (int)",
-      "template": "templates/alerts-template.json"
-    },
     {
       "name": "My Application Workflow (int) - Form Trace",
       "template": "templates/workflow-template.json"
+    }
+  ],
+  "alerts": [
+    {
+      "name": "My Alert",
+      "template": "templates/alerts-template.json"
     }
   ]
 }

@@ -1,4 +1,5 @@
-const importer = require('./import.js');
+const dashimporter = require('./import-dashboard.js');
+const alertimporter = require('./import-alerts.js');
 const exporter = require('./export.js');
 const prompt = require('prompt');
 const program = require('commander');
@@ -49,21 +50,43 @@ prompt.start();
 
 prompt.get(schema, function (err, result) {
     let auth = Buffer.from(result.username + ":" + result.password).toString('base64');
-    if(auth === 'Og=='){
+    if (auth === 'Og==') {
         auth = undefined;
     }
     let importJson = JSON.parse(fs.readFileSync(program.config));
 
-    async.eachSeries(importJson['dashboards'], async function (eachItem, next) {
+    let dashboards = importJson['dashboards'];
+
+    if (dashboards == null) {
+        dashboards = [];
+    }
+
+    async.eachSeries(dashboards, async function (eachItem, next) {
         console.log(eachItem)
         if (importJson['type'] === 'import') {
-            await importer.runit(importJson['host'], auth, eachItem['name'], importJson['oldIndex'], importJson['newIndex'], eachItem['template'], importJson['findInName'], importJson['replaceInName']);
+            await dashimporter.dashboard(importJson['host'], auth, eachItem['name'], importJson['oldIndex'], importJson['newIndex'], eachItem['template'], importJson['findInName'], importJson['replaceInName']);
         } else if (importJson['type'] === 'export') {
-            await exporter.runit(importJson['host'], auth, eachItem['name'], eachItem['template']);
+            await exporter.dashboard(importJson['host'], auth, eachItem['name'], eachItem['template']);
         }
         next();
     }, function () {
-        process.exit()
+
+        if (importJson['alerts'] == null) {
+            process.exit();
+        }
+
+        async.eachSeries(importJson['alerts'], async function (eachItem, next) {
+            console.log(eachItem)
+            if (importJson['type'] === 'import') {
+                await alertimporter.alert(importJson['host'], auth, eachItem['name'], importJson['oldIndex'], importJson['newIndex'], eachItem['template'], importJson['findInName'], importJson['replaceInName'], importJson['alertDestinationId']);
+            } else if (importJson['type'] === 'export') {
+                await exporter.alert(importJson['host'], auth, eachItem['name'], eachItem['template']);
+            }
+            next();
+        }, function () {
+            process.exit()
+        });
+
     });
 
 });

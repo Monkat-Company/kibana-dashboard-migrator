@@ -1,6 +1,6 @@
-# Kibana Dashboard - Migrator
+# Kibana Dashboard and Alert - Migrator
 
-A tool to export and import dashboards from Kibana.
+A tool to export and import dashboards and alert monitors from Kibana.
 
 *This tool is far from perfect and hacked together! - use at your own risk (but it appears to work well)*
 
@@ -34,8 +34,15 @@ Typical examples:
 
 You are free to name the dashboard as you like. 
 
-You only need to create one version of your dashboard to be exported.  In general using the 'dev' naming convention for environment is
+You only need to create one version of your dashboard to be exported.  In general using the 'dev' or 'ci' naming convention for environment is
 recommended but you are free to use anything.
+
+## Kibana Alerts
+
+You are free to name your alerts as you like.
+
+You only need to create one version of your alert to be exported.  In general using the 'dev' or 'ci' naming convention for environment is recommended but
+you are free to use anything.
 
 ## Usage
 
@@ -58,7 +65,13 @@ Example:
       "name": "My Application Workflow (dev) - Form Trace",
       "template": "templates/workflow-template.json"
     }
-  ]
+  ],
+  "alerts": [
+   {
+      "name": "My Alert name",
+      "template": "templates/alert-template.json"
+   }
+  ] 
 }
 ```
 |variable|Description|
@@ -67,6 +80,8 @@ Example:
 |host|The hostname of the kibana instance|
 |dashboards/name| The name of the dashboard to export - must be exact match!|
 |dashboards/template| The template file to generate|
+|alerts/name| The name of the alert to export - must be exact match!|
+|alerts/template| The template file to generate|
 
 ### Importing
 
@@ -80,6 +95,7 @@ Example:
   "newIndex": "my-application-int*",
   "findInName": "-dev-",
   "replaceInName": "-int-",
+  "alertDestinationId": "A5Yf8XIB6hkUUzf6gcwn",
   "dashboards": [
     {
       "name": "My Application Alerts (int)",
@@ -89,7 +105,13 @@ Example:
       "name": "My Application Workflow (int) - Form Trace",
       "template": "templates/workflow-template.json"
     }
-  ]
+  ],
+  "alerts": [
+    {
+      "name": "My Alert name",
+      "template": "templates/alert-template.json"
+   }
+  ] 
 }
 ```
 
@@ -101,15 +123,17 @@ Example:
 |newIndex| The index name for the new dashboard to use - must already exist!|
 |findInName| The string to find within the titles of the visualizations and searches of the exported template file.  Typically its the environment part (e.g. -dev-).|
 |replaceInName| The string to replace the 'findInName' with.  Typically its the environment part (e.g. -int-)  
+|alertDestinationId| The ID of the alert destination. Can be obtained from editing your destination within Kibana and it will be in the URL.
 |dashboards/name| The name of the dashboard to create|
 |dashboards/template| The template file to use|
-
+|alerts/name| The name of the alert to create|
+|alerts/template| The template file to to use|
 
 ## Kibana Version
 
 Kibana goes through quite big changes especially around the visualisations and dashboards.
 
-This code was tested against ```Version: 7.1.1```
+This code was tested against ```Version: 7.4.2```
 
 ## Building the executable
 
