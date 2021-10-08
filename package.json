@@ -5,7 +5,7 @@
   "dependencies": {
     "async": "^0.9.2",
     "commander": "^2.19.0",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "optimist": "^0.6.1",
     "prompt": "^1.0.0",
     "request": "^2.88.0",
