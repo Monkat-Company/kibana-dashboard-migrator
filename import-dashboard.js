@@ -94,30 +94,18 @@ let readFile = () => new Promise((resolve, reject) => {
             reject(error)
         } else {
             console.log('Read file:', options.filename);
-            resolve(JSON.parse(data.toString()))
+            resolve(data.toString())
         }
     })
 });
 
 
-let modifyTemplate = (template) => new Promise((resolve) => {
+let findPreviousIndex = (template) => new Promise((resolve) => {
 
-    let currentDashboard;
-    forEach(template['objects'], (obj) => {
+    forEach(JSON.parse(template)['objects'], (obj) => {
         let type = obj['type'];
-        if (type === 'dashboard') {
-            obj['id'] = uuid();
-            obj['attributes']['title'] = options.title;
-            currentDashboard = obj;
-        } else if (type === 'visualization') {
-             handleReference(obj, currentDashboard);
-        } else if (type === 'search') {
-            handleReference(obj, currentDashboard);
-        } else if (type === 'index-pattern') {
-            console.log('Updated index-pattern to', options.newIndex);
+        if (type === 'index-pattern') {
             options.oldIndex = obj['id'];
-            obj['id'] = options.newIndex;
-            obj['attributes']['title'] = obj['attributes']['title'].replace(options.pre, options.post)
         }
     });
 
@@ -133,20 +121,23 @@ function escapeRegExp(str) {
     return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 }
 
-let createDashboard = (template) => new Promise((resolve, reject) => {
-
-    let templateStr = replaceAll(JSON.stringify(template), options.oldIndex, options.newIndex);
-
+let modifyTemplate = (template) => new Promise((resolve, reject) =>{
+    console.log('Replacing pattern : ', options.oldIndex, 'with', options.newIndex);
+    let templateStrPart = replaceAll(template, options.oldIndex, options.newIndex);
+    let templateStr = replaceAll(templateStrPart, options.pre, options.post);
     console.log('Creating dashboard');
-
     console.log(templateStr);
+    resolve(templateStr);
+});
+
+let createDashboard = (template) => new Promise((resolve, reject) => {
 
     let requestOptions = {
         headers: {
             'kbn-xsrf': 'reporting'
         },
         uri: options.host + '/_plugin/kibana/api/kibana/dashboards/import?exclude=index-pattern',
-        body: templateStr,
+        body: template,
         method: 'POST'
     };
 
@@ -169,26 +160,6 @@ let createDashboard = (template) => new Promise((resolve, reject) => {
     });
 });
 
-function handleReference(obj, currentDashboard) {
-    let dashRef = find(currentDashboard['references'], {'id': obj.id});
-    obj['id'] = uuid();
-    dashRef['id'] = obj['id'];
-    if(obj['attributes'] && obj['attributes']['title'] ) {
-        obj['attributes']['title'] = obj['attributes']['title'].replace(options.pre, options.post);
-    }
-    if(obj['attributes'] && obj['attributes']['visState'] ) {
-        obj['attributes']['visState'] = obj['attributes']['visState'].replace(options.pre, options.post);
-    }
-    obj['references'].forEach(ref => {
-        if(ref.type==='index-pattern'){
-            ref['id'] = options.newIndex;
-        }
-    });
-
-    console.log('Updated visualization to',  obj['id']);
-    return obj['id'];
-}
-
 async function dashboard(host, auth, title, oldIndex, newIndex, filename, pre, post) {
 
     options.host = host;
@@ -205,6 +176,7 @@ async function dashboard(host, auth, title, oldIndex, newIndex, filename, pre, p
         .then((id) => common.getExistingDashboard(options, id))
         .then(deleteExistingDashboard)
         .then(readFile)
+        .then(findPreviousIndex)
         .then(modifyTemplate)
         .then(createDashboard)
         .catch((error) => console.log(error))
