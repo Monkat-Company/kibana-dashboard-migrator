@@ -61,29 +61,30 @@ prompt.get(schema, function (err, result) {
         dashboards = [];
     }
 
-    async.eachSeries(dashboards, async function (eachItem, next) {
+    async.eachSeries(dashboards, async function (eachItem) {
         console.log(eachItem)
         if (importJson['type'] === 'import') {
             await dashimporter.dashboard(importJson['host'], auth, eachItem['name'], importJson['oldIndex'], importJson['newIndex'], eachItem['template'], importJson['findInName'], importJson['replaceInName']);
         } else if (importJson['type'] === 'export') {
             await exporter.dashboard(importJson['host'], auth, eachItem['name'], eachItem['template']);
         }
-        next();
-    }, function () {
-
+        // next();
+    }, function (err) {
+        console.log(err)
         if (importJson['alerts'] == null) {
             process.exit();
         }
 
-        async.eachSeries(importJson['alerts'], async function (eachItem, next) {
+        async.eachSeries(importJson['alerts'], async function (eachItem) {
             console.log(eachItem)
             if (importJson['type'] === 'import') {
                 await alertimporter.alert(importJson['host'], auth, eachItem['name'], importJson['oldIndex'], importJson['newIndex'], eachItem['template'], importJson['findInName'], importJson['replaceInName'], eachItem['replaceMessageSource'], eachItem['alertDestinationId']);
             } else if (importJson['type'] === 'export') {
                 await exporter.alert(importJson['host'], auth, eachItem['name'], eachItem['template']);
             }
-            next();
-        }, function () {
+            // next();
+        }, function (err) {
+            console.log(err)
             process.exit()
         });
 

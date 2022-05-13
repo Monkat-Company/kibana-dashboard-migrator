@@ -1,7 +1,7 @@
 {
   "name": "kibana-dashboard-migrator",
   "author": "Alan Turner <alan.turner@monkat.com> (https://www.monkat.com)",
-  "version": "3.0.0",
+  "version": "5.0.3",
   "dependencies": {
     "async": "^3.2.3",
     "commander": "^2.19.0",
