@@ -101,6 +101,12 @@ let modifyTemplate = (template) => new Promise((resolve) => {
     delete template['_primary_term'];
     delete template['_id'];
     template['monitor']['name'] = template['monitor']['name'].replace(options.pre, options.post)
+//template['monitor']['inputs'][0]['search']['indices'][0]
+    forEach(template['monitor']['inputs'], (input, i) => {
+        forEach(input['search']['indices'], (indices, j) => {
+            template['monitor']['inputs'][i]['search']['indices'][j] = indices.replace(options.pre, options.post)
+        });
+    });
 
     let currentDashboard;
     forEach(template['monitor']['triggers'], (obj) => {
