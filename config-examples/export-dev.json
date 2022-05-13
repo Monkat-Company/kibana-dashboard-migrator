@@ -9,8 +9,8 @@
   ],
   "alerts": [
     {
-      "name": "My Alert",
-      "template": "templates/alerts-template.json"
+      "name": "ah-ppch-policy-service-ci-healthcheck-alert",
+      "template": "templates/ah-policy-service-health-alert.json"
     }
   ]
 }

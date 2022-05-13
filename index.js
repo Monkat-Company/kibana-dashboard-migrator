@@ -78,7 +78,7 @@ prompt.get(schema, function (err, result) {
         async.eachSeries(importJson['alerts'], async function (eachItem, next) {
             console.log(eachItem)
             if (importJson['type'] === 'import') {
-                await alertimporter.alert(importJson['host'], auth, eachItem['name'], importJson['oldIndex'], importJson['newIndex'], eachItem['template'], importJson['findInName'], importJson['replaceInName'], importJson['alertDestinationId']);
+                await alertimporter.alert(importJson['host'], auth, eachItem['name'], importJson['oldIndex'], importJson['newIndex'], eachItem['template'], importJson['findInName'], importJson['replaceInName'], eachItem['replaceMessageSource'], eachItem['alertDestinationId']);
             } else if (importJson['type'] === 'export') {
                 await exporter.alert(importJson['host'], auth, eachItem['name'], eachItem['template']);
             }

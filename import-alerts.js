@@ -111,6 +111,10 @@ let modifyTemplate = (template) => new Promise((resolve) => {
             actionobj['name'] = actionobj['name'].replace(options.pre, options.post);
             actionobj['destination_id'] = options.alertDestinationId;
             actionobj['subject_template']['source'] = actionobj['subject_template']['source'].replace(options.pre, options.post);
+            actionobj['message_template']['source'] = actionobj['message_template']['source'].replace(options.pre, options.post);
+            for (let i=0; i < options.replaceMessageSource.length; i=i+2) {
+                actionobj['message_template']['source'] = actionobj['message_template']['source'].replace(options.replaceMessageSource[i], options.replaceMessageSource[i+1])
+            }
         });
 
     });
@@ -119,7 +123,7 @@ let modifyTemplate = (template) => new Promise((resolve) => {
 });
 
 
-async function alert(host, auth, title, oldIndex, newIndex, filename, pre, post, destinationId) {
+async function alert(host, auth, title, oldIndex, newIndex, filename, pre, post, replaceMessageSource, destinationId) {
 
     options.host = host;
     options.auth = auth;
@@ -130,6 +134,7 @@ async function alert(host, auth, title, oldIndex, newIndex, filename, pre, post,
     options.filename = filename;
     options.pre = pre;
     options.post = post;
+    options.replaceMessageSource = replaceMessageSource;
 
     console.log(`Looking for ${options.title}`);
 

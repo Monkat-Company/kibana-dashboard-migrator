@@ -83,6 +83,7 @@ Example:
 |alerts/name| The name of the alert to export - must be exact match!|
 |alerts/template| The template file to generate|
 
+
 ### Importing
 
 #### Configuration
@@ -109,7 +110,9 @@ Example:
   "alerts": [
     {
       "name": "My Alert name",
-      "template": "templates/alert-template.json"
+      "template": "templates/alert-template.json",
+      "alertDestinationId": "A5Yf8XIB6hkUUzf6gcwn",
+      "replaceMessageSource": [ ".ci.", ".int.", "\"CI\"", "\"INT\""]
    }
   ] 
 }
@@ -122,12 +125,13 @@ Example:
 |oldIndex| The index name in the template to replace|
 |newIndex| The index name for the new dashboard to use - must already exist!|
 |findInName| The string to find within the titles of the visualizations and searches of the exported template file.  Typically its the environment part (e.g. -dev-).|
-|replaceInName| The string to replace the 'findInName' with.  Typically its the environment part (e.g. -int-)  
-|alertDestinationId| The ID of the alert destination. Can be obtained from editing your destination within Kibana and it will be in the URL.
+|replaceInName| The string to replace the 'findInName' with.  Typically its the environment part (e.g. -int-)  |
 |dashboards/name| The name of the dashboard to create|
 |dashboards/template| The template file to use|
 |alerts/name| The name of the alert to create|
 |alerts/template| The template file to to use|
+|alerts/alertDestinationId"| You will have had to setup a new destination in the target environment, obtain its ID and set it here|
+|alerts/replaceMessageSource| Provides the option to replace text within the message source|
 
 ## Kibana Version
 

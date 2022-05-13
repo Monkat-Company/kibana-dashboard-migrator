@@ -3,10 +3,10 @@
   "author": "Alan Turner <alan.turner@monkat.com> (https://www.monkat.com)",
   "version": "3.0.0",
   "dependencies": {
-    "async": "^0.9.2",
+    "async": "^3.2.3",
     "commander": "^2.19.0",
     "lodash": "^4.17.21",
-    "optimist": "^0.6.1",
+    "optimist": "^0.5.2",
     "prompt": "^1.0.0",
     "request": "^2.88.0",
     "uuid": "^3.3.2"
