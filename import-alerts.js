@@ -113,7 +113,7 @@ let modifyTemplate = (template) => new Promise((resolve) => {
             actionobj['subject_template']['source'] = actionobj['subject_template']['source'].replace(options.pre, options.post);
             actionobj['message_template']['source'] = actionobj['message_template']['source'].replace(options.pre, options.post);
             for (let i=0; i < options.replaceMessageSource.length; i=i+2) {
-                actionobj['message_template']['source'] = actionobj['message_template']['source'].replace(options.replaceMessageSource[i], options.replaceMessageSource[i+1])
+                actionobj['message_template']['source'] = actionobj['message_template']['source'].replaceAll(options.replaceMessageSource[i], options.replaceMessageSource[i+1])
             }
         });
 

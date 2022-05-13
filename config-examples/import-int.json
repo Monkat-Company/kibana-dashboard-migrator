@@ -7,8 +7,8 @@
   "replaceInName": "-int",
   "alerts": [
     {
-      "name": "My Alert",
-      "template": "templates/ah-hub-service-cre-alert.json",
+      "name": "ah-ppch-policy-service-ci-healthcheck-alert",
+      "template": "templates/alert-internal-error-ci.json",
       "alertDestinationId": "A5Yf8XIB6hkUUzf6gcwn",
       "replaceMessageSource": [ ".ci.", ".int.", "\"CI\"", "\"INT\""]
     }
